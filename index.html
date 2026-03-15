@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>普通投资者波段操作指南 · 胖虎框架应用</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f4f0;
+    --bg3: #eeecea;
+    --text: #1a1a18;
+    --text2: #5f5e5a;
+    --text3: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.2);
+    --blue-bg: #e6f1fb;
+    --blue-text: #185FA5;
+    --blue-border: #85b7eb;
+    --green-bg: #eaf3de;
+    --green-text: #3B6D11;
+    --amber-bg: #faeeda;
+    --amber-text: #854F0B;
+    --red-bg: #fcebeb;
+    --red-text: #A32D2D;
+    --teal: #1D9E75;
+    --coral: #D85A30;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #252522;
+      --bg3: #2e2e2b;
+      --text: #e8e6de;
+      --text2: #9c9a92;
+      --text3: #6b6961;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.18);
+      --blue-bg: #0c447c;
+      --blue-text: #85b7eb;
+      --blue-border: #185FA5;
+      --green-bg: #27500a;
+      --green-text: #97c459;
+      --amber-bg: #633806;
+      --amber-text: #fac775;
+      --red-bg: #791f1f;
+      --red-text: #f09595;
+      --teal: #5DCAA5;
+      --coral: #F0997B;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg3);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .page-header {
+    background: var(--bg);
+    border-bottom: 0.5px solid var(--border);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .page-header p {
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: var(--blue-bg);
+    color: var(--blue-text);
+    margin-top: 8px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 10px;
+    border: 0.5px solid var(--border);
+  }
+  .tab-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+    cursor: pointer;
+    font-size: 13px;
+    background: transparent;
+    color: var(--text2);
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .tab-btn.active {
+    background: var(--blue-bg);
+    color: var(--blue-text);
+    border-color: var(--blue-border);
+  }
+  .tab-btn:hover:not(.active) {
+    background: var(--bg2);
+    color: var(--text);
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .metric {
+    flex: 1;
+    min-width: 100px;
+    background: var(--bg2);
+    border-radius: var(--radius-sm);
+    padding: .75rem;
+    text-align: center;
+  }
+  .metric-label { font-size: 11px; color: var(--text2); margin-bottom: 3px; }
+  .metric-val { font-size: 18px; font-weight: 500; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    margin-right: 6px;
+  }
+  .tag-now { background: var(--green-bg); color: var(--green-text); }
+  .tag-wait { background: var(--amber-bg); color: var(--amber-text); }
+  .tag-watch { background: var(--blue-bg); color: var(--blue-text); }
+  .tag-skip { background: var(--red-bg); color: var(--red-text); }
+
+  .signal {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 13px;
+  }
+  .signal:last-child { border-bottom: none; }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .dot-green { background: #1D9E75; }
+  .dot-amber { background: #BA7517; }
+  .dot-red { background: #A32D2D; }
+  .dot-blue { background: #185FA5; }
+
+  .progress-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg2);
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  .progress-fill { height: 6px; border-radius: 3px; }
+
+  .rule {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--border);
+    align-items: flex-start;
+  }
+  .rule:last-child { border-bottom: none; }
+  .rule-num {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text3);
+    min-width: 30px;
+    padding-top: 2px;
+  }
+  .rule-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .rule-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Bond explainer */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .slider-row label { font-size: 13px; color: var(--text2); flex-shrink: 0; }
+  .slider-row input[type=range] { flex: 1; }
+  .slider-row span { font-size: 14px; font-weight: 500; min-width: 30px; text-align: right; }
+
+  .scenario-box {
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    border: 0.5px solid var(--border);
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    background: var(--bg2);
+  }
+
+  /* Cycle chart */
+  .cycle-btns { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text3);
+    padding: 2rem 1rem 1rem;
+    border-top: 0.5px solid var(--border);
+    margin-top: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>普通投资者波段操作指南</h1>
+  <p>基于胖虎房圈「中美债券周期」框架 · 2026年版</p>
+  <span class="badge">仅供学习参考，不构成投资建议</span>
+</div>
+
+<div class="container">
+
+  <!-- NAV TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="show('position', this)">现在在哪里</button>
+    <button class="tab-btn" onclick="show('targets', this)">买什么</button>
+    <button class="tab-btn" onclick="show('timing', this)">怎么买</button>
+    <button class="tab-btn" onclick="show('rules', this)">铁律</button>
+    <button class="tab-btn" onclick="show('signals', this)">观察指标</button>
+    <button class="tab-btn" onclick="show('bond', this)">债券基础</button>
+    <button class="tab-btn" onclick="show('cycle', this)">中美周期图</button>
+  </div>
+
+  <!-- SECTION 1: 现在在哪里 -->
+  <div id="section-position" class="section active">
+    <div class="row">
+      <div class="metric">
+        <div class="metric-label">美债10年期</div>
+        <div class="metric-val" style="color:#D85A30">4.2%</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">目标3%以下</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">当前阶段</div>
+        <div class="metric-val" style="font-size:14px">过渡期</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">降息启动但未完成</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">中国资产牛市</div>
+        <div class="metric-val" style="font-size:14px">酝酿中</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">窗口开启未全开</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">周期进度</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:3px">美债降息进度（目标：4.5%→3%）</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:28%;background:#185FA5"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:10px;margin-bottom:3px">外资流入中国（估算 vs 历史峰值）</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:20%;background:#1D9E75"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:10px;margin-bottom:3px">中国资产牛市兑现程度</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:25%;background:#BA7517"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px">当前是1-3年等待期的早中段，大行情未到，方向确立</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">主要扰动因素（此刻）</div>
+      <div class="signal"><div class="dot dot-red"></div><span>油价推升通胀，美联储降息节奏被迫推迟</span></div>
+      <div class="signal"><div class="dot dot-amber"></div><span>霍尔木兹海峡封锁 → 供应链成本上升</span></div>
+      <div class="signal"><div class="dot dot-blue"></div><span>伊朗人民币结算提案 → 长期利好人民币资产</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span>十五五开局 + 两会政策信号积极</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: 买什么 -->
+  <div id="section-targets" class="section">
+    <div class="card">
+      <div class="header-row">
+        <span class="card-title">第一层：外资流入第一落点</span>
+        <span class="tag tag-now">现在可建</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">港股是人民币资产的流动性入口，外资换仓必先经过这里</div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>恒生互联网ETF（513330）</strong> — 腾讯/阿里/美团，弹性最大，估值仍低</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>恒生科技ETF（513130）</strong> — 覆盖更广，含小米/中芯，波动略小</span></div>
+      <div class="signal"><div class="dot dot-blue"></div><span><strong>港股红利ETF</strong> — 等待期有现金流，抗跌，适合底仓</span></div>
+    </div>
+
+    <div class="card">
+      <div class="header-row">
+        <span class="card-title">第二层：人民币资产定价锚</span>
+        <span class="tag tag-now">现在可建</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">外资进A股的第一个目标，降息环境下估值最稳</div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>沪深300ETF（510300）</strong> — 外资配置A股的基准锚，流动性最佳</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>中证A500ETF（159351）</strong> — 比300更均衡，新经济成分更多</span></div>
+      <div class="signal"><div class="dot dot-blue"></div><span><strong>价值100ETF（512040）</strong> — 高ROE+低估值，等待期表现最稳，是压舱石</span></div>
+    </div>
+
+    <div class="card">
+      <div class="header-row">
+        <span class="card-title">第三层：美元走弱受益</span>
+        <span class="tag tag-now">当前逻辑最强</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">降息→美元弱→大宗商品涨，地缘风险叠加，确定性高</div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>黄金ETF（518880/159937）</strong> — 美元信用松动+通胀+避险三重驱动</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>有色金属ETF</strong> — 铜绑定新能源需求，美元弱时直接受益</span></div>
+    </div>
+
+    <div class="card">
+      <div class="header-row">
+        <span class="card-title">第四层：产业叙事进攻仓</span>
+        <span class="tag tag-wait">等待期高波动</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">方向正确但需要接受反复震荡，仓位不宜过重</div>
+      <div class="signal"><div class="dot dot-amber"></div><span><strong>机器人/AI ETF</strong> — 政策+产业双驱动，但高beta，单仓不超25%</span></div>
+      <div class="signal"><div class="dot dot-amber"></div><span><strong>储能ETF</strong> — 高油价反而加速能源转型，逻辑稳，可适当持有</span></div>
+      <div class="signal"><div class="dot dot-amber"></div><span><strong>半导体ETF</strong> — 自立自强主线，政策节奏决定弹性，小仓观察</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: 怎么买 -->
+  <div id="section-timing" class="section">
+    <div class="card">
+      <div class="card-title">仓位结构目标</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:3px">黄金（对冲层）— 15%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:15%;background:#BA7517"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:8px;margin-bottom:3px">港股（第一落点）— 25%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:25%;background:#185FA5"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:8px;margin-bottom:3px">宽基/价值（压舱石）— 20%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:20%;background:#1D9E75"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:8px;margin-bottom:3px">有色/大宗（美元周期）— 10%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:10%;background:#639922"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:8px;margin-bottom:3px">进攻仓（产业叙事）— 25%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:25%;background:#D85A30"></div></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:8px;margin-bottom:3px">现金（待机）— 5%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:5%;background:#888780"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">建仓节奏：分三批</div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>第一批（现在）60%仓位</strong> — 黄金、港股红利、宽基压舱石。逻辑确立，不需要等信号。</span></div>
+      <div class="signal"><div class="dot dot-amber"></div><span><strong>第二批（美债降至4%以下）30%仓位</strong> — 加港股互联网、有色。收益率下行趋势确认后加。</span></div>
+      <div class="signal"><div class="dot dot-blue"></div><span><strong>第三批（美债降至3.5%以下）10%仓位</strong> — 满仓进攻仓，大行情已启动，追高也值得。</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">定投 vs 分批建仓</div>
+      <div class="signal"><div class="dot dot-green"></div><span><strong>压舱石类（价值100、宽基、黄金）</strong> — 一次性买够，逻辑清晰不需要摊平。</span></div>
+      <div class="signal"><div class="dot dot-amber"></div><span><strong>进攻类（机器人、港股互联网）</strong> — 分批建仓，每次大跌5-10%加一层，最多三批。</span></div>
+      <div class="signal"><div class="dot dot-red"></div><span><strong>不要机械定投</strong> — 定投是掩盖"不知道该不该买"的懒人方案，有判断就分批建仓。</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: 铁律 -->
+  <div id="section-rules" class="section">
+    <div class="card">
+      <div class="rule">
+        <div class="rule-num">01</div>
+        <div><div class="rule-title">单一ETF仓位不超过25%</div><div class="rule-desc">无论多看好，超过25%就是在赌，不是在投资。一旦踩雷，组合直接残废。</div></div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">02</div>
+        <div><div class="rule-title">等待期不做频繁操作</div><div class="rule-desc">坦然面对过程涨跌。每月操作超过2次就是噪音交易，手续费和摩擦成本会吃掉收益。</div></div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">03</div>
+        <div><div class="rule-title">盈利超40%要减仓一半</div><div class="rule-desc">不是跑路，是把已兑现的收益移到下一批等待仓。涨了40%还拿满仓，等于在用涨幅继续冒原来的风险。</div></div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">04</div>
+        <div><div class="rule-title">不买自己看不懂的主题ETF</div><div class="rule-desc">低空经济、脑机接口、量子计算——听起来很厉害但你解释不出赚钱逻辑，就别买。热点ETF是散户收割机。</div></div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">05</div>
+        <div><div class="rule-title">永远保留5%-10%现金</div><div class="rule-desc">不是怕跌，是为了抓黑天鹅。大跌10%时有子弹加仓，比满仓扛着心理舒服100倍。</div></div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">06</div>
+        <div><div class="rule-title">宏观判断对了也可能亏钱</div><div class="rule-desc">大方向是对的，但时间差可能2-3年。入场过早就要能扛住等待期的波动，扛不住的仓位不要建。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: 观察指标 -->
+  <div id="section-signals" class="section">
+    <div class="card">
+      <div class="card-title">加仓信号（出现则加仓）</div>
+      <div class="signal"><div class="dot dot-green"></div><span>美债10年期跌破 <strong>4.0%</strong> 并稳住 → 加港股互联网仓位</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span>美债10年期跌破 <strong>3.5%</strong> → 进攻仓全面加码，大行情启动信号</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span>人民币汇率升破 <strong>6.8</strong> → 外资流入加速，港股宽基加仓</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span>南向资金连续5天净流入超 <strong>100亿</strong> → 市场情绪回暖，可跟进</span></div>
+      <div class="signal"><div class="dot dot-green"></div><span>恒生科技PE跌至 <strong>15倍以下</strong> → 估值底部，逢低加仓</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">减仓 / 警惕信号</div>
+      <div class="signal"><div class="dot dot-red"></div><span>美债10年期重新升破 <strong>4.8%</strong> → 降息预期破裂，减进攻仓</span></div>
+      <div class="signal"><div class="dot dot-red"></div><span>油价持续高于 <strong>100美元/桶</strong> → 通胀压力延迟降息，黄金继续持有其余减仓</span></div>
+      <div class="signal"><div class="dot dot-amber"></div><span>持仓单个ETF涨幅超 <strong>40%</strong> → 减仓一半兑现，余下继续持有</span></div>
+      <div class="signal"><div class="dot dot-amber"></div><span>人民币快速贬值至 <strong>7.5以上</strong> → 外资流出信号，港股降仓</span></div>
+      <div class="signal"><div class="dot dot-red"></div><span>中美关系出现重大冲突/制裁升级 → 降低整体A股/港股仓位，提高黄金比例</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">每月只需看这三个数据（15分钟）</div>
+      <div class="signal"><div class="dot dot-blue"></div><span><strong>美债10年期收益率</strong> — investing.com 可查，最核心的一个数字</span></div>
+      <div class="signal"><div class="dot dot-blue"></div><span><strong>南向资金净流入/净流出</strong> — 东财等App可查，反映内地资金对港股信心</span></div>
+      <div class="signal"><div class="dot dot-blue"></div><span><strong>人民币兑美元汇率方向</strong> — 升值/贬值趋势，外资流向的先行指标</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: 债券基础 -->
+  <div id="section-bond" class="section">
+    <div class="card">
+      <div class="card-title">债券价格 vs 收益率——拖动滑块感受反向关系</div>
+      <div class="row" style="margin-bottom:.75rem">
+        <div class="metric">
+          <div class="metric-label">债券价格</div>
+          <div id="b-price" class="metric-val">100</div>
+          <div id="b-price-arrow" style="font-size:12px;color:var(--text2);margin-top:2px">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">实际收益率</div>
+          <div id="b-yield" class="metric-val">5.00%</div>
+          <div id="b-yield-arrow" style="font-size:12px;color:var(--text2);margin-top:2px">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">票面利息</div>
+          <div class="metric-val">5元</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">固定不变</div>
+        </div>
+      </div>
+      <div class="slider-row">
+        <label>买入者少←</label>
+        <input type="range" id="bond-slider" min="70" max="140" value="100" step="1" oninput="updateBond(this.value)">
+        <label>→买入者多</label>
+      </div>
+      <div id="bond-scenario" class="scenario-box"></div>
+      <div style="position:relative;width:100%;height:180px">
+        <canvas id="bondChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: 中美周期图 -->
+  <div id="section-cycle" class="section">
+    <div class="card">
+      <div class="card-title">中美镜像周期</div>
+      <div class="cycle-btns">
+        <button class="tab-btn active" id="cycle-btn-0" onclick="setCycle(0)">2020–2024 当前周期</button>
+        <button class="tab-btn" id="cycle-btn-1" onclick="setCycle(1)">2024+ 轮转后</button>
+      </div>
+      <svg width="100%" viewBox="0 0 640 340" style="display:block">
+        <defs>
+          <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- Axis -->
+        <line x1="50" y1="320" x2="610" y2="320" stroke="#888" stroke-width="0.5" opacity="0.4"/>
+        <text font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="50" y="335" text-anchor="middle">2020</text>
+        <text font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="185" y="335" text-anchor="middle">2021</text>
+        <text font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="320" y="335" text-anchor="middle">2022–23</text>
+        <text font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="455" y="335" text-anchor="middle">2024</text>
+        <text font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="570" y="335" text-anchor="middle">2025–26</text>
+        <!-- Divider -->
+        <line x1="455" y1="18" x2="455" y2="315" stroke="#888" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.35"/>
+        <text font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="455" y="13" text-anchor="middle">周期切换</text>
+        <!-- Labels -->
+        <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#1D9E75" x="18" y="100" text-anchor="middle">中</text>
+        <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#1D9E75" x="18" y="118" text-anchor="middle">国</text>
+        <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#185FA5" x="18" y="255" text-anchor="middle">美</text>
+        <text font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#185FA5" x="18" y="273" text-anchor="middle">国</text>
+        <!-- China waves -->
+        <path id="cn1" fill="none" stroke="#1D9E75" stroke-width="2.5"
+          d="M50,148 C90,110 130,72 185,72 C240,72 280,110 320,148 C350,178 400,196 455,186"/>
+        <path id="cn2" fill="none" stroke="#1D9E75" stroke-width="0.8" opacity="0.35"
+          d="M455,186 C495,168 525,130 570,92"/>
+        <!-- US waves -->
+        <path id="us1" fill="none" stroke="#185FA5" stroke-width="2.5"
+          d="M50,272 C90,290 130,300 185,290 C240,280 280,252 320,224 C350,204 400,198 455,204"/>
+        <path id="us2" fill="none" stroke="#185FA5" stroke-width="0.8" opacity="0.35"
+          d="M455,204 C495,222 525,252 570,280"/>
+        <!-- Box labels -->
+        <g id="cn-box-bond">
+          <rect x="88" y="46" width="115" height="34" rx="6" fill="#eaf3de" stroke="#97c459" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#3B6D11" x="145" y="61" text-anchor="middle">扩表降息</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" fill="#3B6D11" x="145" y="74" text-anchor="middle">债牛 — 债券涨</text>
+        </g>
+        <g id="cn-box-asset" opacity="0.3">
+          <rect x="462" y="70" width="105" height="34" rx="6" fill="#eaf3de" stroke="#97c459" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#3B6D11" x="514" y="85" text-anchor="middle">缩表加息</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" fill="#3B6D11" x="514" y="98" text-anchor="middle">资产牛启动</text>
+        </g>
+        <g id="us-box-asset">
+          <rect x="192" y="256" width="115" height="34" rx="6" fill="#e6f1fb" stroke="#85b7eb" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#185FA5" x="249" y="271" text-anchor="middle">缩表加息</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" fill="#185FA5" x="249" y="284" text-anchor="middle">资产牛 — 美股涨</text>
+        </g>
+        <g id="us-box-bond" opacity="0.3">
+          <rect x="462" y="256" width="105" height="34" rx="6" fill="#e6f1fb" stroke="#85b7eb" stroke-width="0.5"/>
+          <text font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#185FA5" x="514" y="271" text-anchor="middle">扩表降息</text>
+          <text font-family="-apple-system,sans-serif" font-size="11" fill="#185FA5" x="514" y="284" text-anchor="middle">债牛启动</text>
+        </g>
+        <!-- Flow arrow -->
+        <line id="flow-line" x1="185" y1="148" x2="185" y2="222" stroke="#888" stroke-width="1" stroke-dasharray="5 4" opacity="0.5" marker-end="url(#arr2)"/>
+        <text id="flow-text" font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="200" y="192">资金流美</text>
+        <!-- Dots at switch -->
+        <circle cx="455" cy="186" r="5" fill="#1D9E75"/>
+        <circle cx="455" cy="204" r="5" fill="#185FA5"/>
+        <!-- Mirror label -->
+        <text font-family="-apple-system,sans-serif" font-size="11" fill="#888" x="320" y="180" text-anchor="middle" opacity="0.5">← 镜像错位 →</text>
+      </svg>
+      <div id="cycle-desc" class="scenario-box" style="margin-top:12px;margin-bottom:0"></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  基于胖虎房圈公开内容整理 · 结合中金/东吴/招商等机构2026年展望 · 仅供学习参考，不构成投资建议<br>
+  数据截至2026年3月 · 投资有风险，入市需谨慎
+</footer>
+
+<script>
+// ---- Tab navigation ----
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'bond') initBondChart();
+}
+
+// ---- Bond explainer ----
+let bondChartInstance = null;
+let bondInited = false;
+
+function initBondChart() {
+  if (bondInited) return;
+  bondInited = true;
+  const prices = [], yields = [];
+  for (let p = 70; p <= 140; p++) {
+    prices.push(p);
+    yields.push(parseFloat((5 / p * 100).toFixed(2)));
+  }
+  bondChartInstance = new Chart(document.getElementById('bondChart'), {
+    type: 'line',
+    data: {
+      labels: prices,
+      datasets: [
+        { label: '收益率曲线', data: yields, borderColor: '#185FA5', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
+        { label: '当前', data: [], borderColor: '#D85A30', backgroundColor: '#D85A30', pointRadius: 8, showLine: false, yAxisID: 'y' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: {
+        x: { title: { display: true, text: '债券价格', font: { size: 11 }, color: '#888' }, ticks: { maxTicksLimit: 8, callback: (v, i) => prices[i], color: '#888', font: { size: 11 } }, grid: { color: 'rgba(128,128,128,0.1)' } },
+        y: { title: { display: true, text: '收益率 (%)', font: { size: 11 }, color: '#888' }, ticks: { callback: v => v.toFixed(1) + '%', color: '#888', font: { size: 11 } }, grid: { color: 'rgba(128,128,128,0.1)' } }
+      }
+    }
+  });
+  updateBond(100);
+}
+
+function updateBond(price) {
+  price = parseInt(price);
+  const y = (5 / price * 100);
+  document.getElementById('b-price').textContent = price;
+  document.getElementById('b-yield').textContent = y.toFixed(2) + '%';
+  if (price > 100) {
+    document.getElementById('b-price-arrow').textContent = '↑ 高于面值';
+    document.getElementById('b-price-arrow').style.color = '#185FA5';
+    document.getElementById('b-yield-arrow').textContent = '↓ 低于票面利率';
+    document.getElementById('b-yield-arrow').style.color = '#D85A30';
+    document.getElementById('bond-scenario').innerHTML = `<strong>买的人多，价格被推高到 ${price} 元</strong><br>你花了 ${price} 元，每年只拿到 5 元利息，实际收益率降到 <span style="color:#D85A30;font-weight:500">${y.toFixed(2)}%</span>，低于票面的 5%。<br><span style="font-size:12px;color:var(--text2)">→ 价格↑ 收益率↓ 这就是反向关系</span>`;
+  } else if (price < 100) {
+    document.getElementById('b-price-arrow').textContent = '↓ 低于面值';
+    document.getElementById('b-price-arrow').style.color = '#D85A30';
+    document.getElementById('b-yield-arrow').textContent = '↑ 高于票面利率';
+    document.getElementById('b-yield-arrow').style.color = '#1D9E75';
+    document.getElementById('bond-scenario').innerHTML = `<strong>卖的人多，价格跌到 ${price} 元</strong><br>你只花了 ${price} 元，每年仍拿到 5 元利息，实际收益率升到 <span style="color:#1D9E75;font-weight:500">${y.toFixed(2)}%</span>，高于票面的 5%。<br><span style="font-size:12px;color:var(--text2)">→ 价格↓ 收益率↑ 反向关系再次验证</span>`;
+  } else {
+    document.getElementById('b-price-arrow').textContent = '= 等于面值';
+    document.getElementById('b-price-arrow').style.color = 'var(--text2)';
+    document.getElementById('b-yield-arrow').textContent = '= 等于票面利率';
+    document.getElementById('b-yield-arrow').style.color = 'var(--text2)';
+    document.getElementById('bond-scenario').innerHTML = `<strong>价格等于面值 100 元</strong><br>实际收益率 = 票面利率 = 5%。拖动滑块，观察价格与收益率如何反向运动。`;
+  }
+  if (bondChartInstance) {
+    const idx = price - 70;
+    bondChartInstance.data.datasets[1].data = [{ x: idx, y: parseFloat(y.toFixed(2)) }];
+    bondChartInstance.update('none');
+  }
+}
+
+// ---- Cycle chart ----
+const cycleDescs = [
+  '2020–2024：中国扩表降息（债牛），美国缩表加息（资产牛）。全球资本涌入美国，美股美房大涨。两国周期完全错位，构成镜像关系。',
+  '2024+：美国开始降息扩表，美债收益率下行，资金开始寻找出路。资本先流入港股（人民币资产的流动性入口），再扩散至A股。中国进入资产牛市窗口——但真正大行情需等美债降至3%以下。'
+];
+
+function setCycle(idx) {
+  document.getElementById('cycle-btn-0').classList.toggle('active', idx === 0);
+  document.getElementById('cycle-btn-1').classList.toggle('active', idx === 1);
+  document.getElementById('cn1').style.opacity = idx === 0 ? '1' : '0.3';
+  document.getElementById('cn1').setAttribute('stroke-width', idx === 0 ? '2.5' : '0.8');
+  document.getElementById('cn2').style.opacity = idx === 1 ? '1' : '0.3';
+  document.getElementById('cn2').setAttribute('stroke-width', idx === 1 ? '2.5' : '0.8');
+  document.getElementById('us1').style.opacity = idx === 0 ? '1' : '0.3';
+  document.getElementById('us1').setAttribute('stroke-width', idx === 0 ? '2.5' : '0.8');
+  document.getElementById('us2').style.opacity = idx === 1 ? '1' : '0.3';
+  document.getElementById('us2').setAttribute('stroke-width', idx === 1 ? '2.5' : '0.8');
+  document.getElementById('cn-box-bond').style.opacity = idx === 0 ? '1' : '0.3';
+  document.getElementById('cn-box-asset').style.opacity = idx === 1 ? '1' : '0.3';
+  document.getElementById('us-box-asset').style.opacity = idx === 0 ? '1' : '0.3';
+  document.getElementById('us-box-bond').style.opacity = idx === 1 ? '1' : '0.3';
+  const flowLine = document.getElementById('flow-line');
+  const flowText = document.getElementById('flow-text');
+  if (idx === 1) {
+    flowLine.setAttribute('x1', '455'); flowLine.setAttribute('y1', '204');
+    flowLine.setAttribute('x2', '540'); flowLine.setAttribute('y2', '230');
+    flowText.setAttribute('x', '462'); flowText.setAttribute('y', '225');
+    flowText.textContent = '资金转向中国';
+  } else {
+    flowLine.setAttribute('x1', '185'); flowLine.setAttribute('y1', '148');
+    flowLine.setAttribute('x2', '185'); flowLine.setAttribute('y2', '222');
+    flowText.setAttribute('x', '200'); flowText.setAttribute('y', '192');
+    flowText.textContent = '资金流美';
+  }
+  document.getElementById('cycle-desc').textContent = cycleDescs[idx];
+}
+
+// Init
+setCycle(0);
+document.getElementById('bond-slider').addEventListener('input', e => updateBond(e.target.value));
+</script>
+</body>
+</html>
