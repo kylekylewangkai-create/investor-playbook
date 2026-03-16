@@ -34,34 +34,188 @@ body {
   font-size: 14px;
   line-height: 1.6;
   min-height: 100vh;
-  padding-top: 46px; /* tradingview ticker height */
 }
 
-/* ===== Ticker Bar (TradingView) ===== */
-#ticker-bar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 46px;
-  z-index: 1000;
+/* ===== 宏观仪表盘 ===== */
+.macro-dashboard {
+  margin-bottom: 20px;
+}
+
+.macro-intro {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+.macro-featured {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+
+.macro-chart-card {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   overflow: hidden;
 }
 
-#ticker-bar .tradingview-widget-container {
-  height: 46px;
+.macro-chart-card.featured {
+  border-color: rgba(88,166,255,0.25);
 }
 
-#ticker-bar .tradingview-widget-container__widget {
-  height: 46px;
+.macro-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--border);
 }
 
-.ticker-countdown {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--blue);
-  background: rgba(88,166,255,0.1);
+.macro-chart-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.3px;
+}
+
+.macro-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   padding: 2px 8px;
   border-radius: 10px;
+}
+
+.macro-tag.core {
+  background: rgba(88,166,255,0.12);
+  color: var(--blue);
+  border: 1px solid rgba(88,166,255,0.25);
+}
+
+.macro-tag.linked {
+  background: rgba(227,179,65,0.12);
+  color: var(--orange);
+  border: 1px solid rgba(227,179,65,0.25);
+}
+
+.macro-tag.asset {
+  background: rgba(63,185,80,0.12);
+  color: var(--green);
+  border: 1px solid rgba(63,185,80,0.25);
+}
+
+.macro-chart-body {
+  /* TradingView widget wrapper */
+}
+
+.macro-narrative {
+  padding: 10px 14px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+}
+
+.macro-narrative strong {
+  color: var(--text);
+}
+
+.macro-narrative .threshold {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin: 0 2px;
+}
+
+.macro-narrative .thr-red    { color: var(--red); }
+.macro-narrative .thr-orange { color: var(--orange); }
+.macro-narrative .thr-green  { color: var(--green); }
+
+/* 右侧阶段判断卡 */
+.macro-stage-card {
+  background: var(--card2);
   border: 1px solid rgba(88,166,255,0.2);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stage-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.stage-value {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stage-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+.stage-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+.stage-threshold-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stage-threshold-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.thr-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.thr-dot.red    { background: var(--red); }
+.thr-dot.orange { background: var(--orange); }
+.thr-dot.green  { background: var(--green); }
+
+.thr-item-label { color: var(--muted); line-height: 1.5; }
+.thr-item-label strong { color: var(--text); }
+
+/* 3列次要指标 */
+.macro-secondary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .macro-featured { grid-template-columns: 1fr; }
+  .macro-stage-card { order: -1; }
+  .macro-secondary { grid-template-columns: 1fr; }
+  #ticker-bar { display: none; }
 }
 
 /* ===== Main Container ===== */
@@ -769,10 +923,6 @@ footer a { color: var(--blue); text-decoration: none; }
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  body { padding-top: 44px; }
-
-  #ticker-bar { height: 46px; }
-
   .big-cards { grid-template-columns: 1fr; gap: 10px; }
 
   .signals-grid { grid-template-columns: 1fr; }
@@ -803,43 +953,14 @@ footer a { color: var(--blue); text-decoration: none; }
 </head>
 <body>
 
-<!-- ===== Ticker Bar (TradingView) ===== -->
-<div id="ticker-bar">
-  <div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-    {
-      "symbols": [
-        {"proName": "TVC:US10Y",    "title": "美债10Y"},
-        {"proName": "FX:USDCNY",    "title": "人民币"},
-        {"proName": "TVC:GOLD",     "title": "黄金"},
-        {"proName": "HKEX:HSI",     "title": "恒生指数"},
-        {"proName": "HKEX:HSTECH",  "title": "恒生科技"},
-        {"proName": "NYMEX:CL1!",   "title": "WTI原油"},
-        {"proName": "SP:SPX",       "title": "标普500"},
-        {"proName": "NASDAQ:NDX",   "title": "纳斯达克"}
-      ],
-      "showSymbolLogo": false,
-      "isTransparent": true,
-      "displayMode": "adaptive",
-      "colorTheme": "dark",
-      "locale": "zh_CN"
-    }
-    </script>
-  </div>
-</div>
 
 <!-- ===== Main ===== -->
 <div class="container">
 
   <!-- Header -->
   <div class="header">
-    <div class="live-badge">
-      <span class="live-dot"></span>
-      LIVE DATA
-    </div>
     <h1>普通投资者<span>波段操作指南</span></h1>
-    <p>基于「胖虎房圈·中美债券周期」框架 &nbsp;·&nbsp; 数据实时更新自 Yahoo Finance</p>
+    <p>基于「胖虎房圈·中美债券周期」框架 &nbsp;·&nbsp; 宏观指标 + 操作策略</p>
   </div>
 
   <!-- Tabs -->
@@ -856,24 +977,170 @@ footer a { color: var(--blue); text-decoration: none; }
   <!-- ===================== TAB 1: 现在在哪里 ===================== -->
   <div class="tab-content active" id="tab-0">
 
-    <!-- Big Number Cards -->
-    <div class="big-cards">
-      <div class="big-card">
-        <div class="big-card-label">美债 10年期</div>
-        <div class="big-number" id="tnx-big">--</div>
-        <div class="big-card-sub" id="tnx-big-sub">实时数据加载中</div>
-      </div>
-      <div class="big-card">
-        <div class="big-card-label">当前阶段</div>
-        <div class="big-number blue" style="font-size:22px; padding-top:4px;">过渡期</div>
-        <div class="big-card-sub">美债高位震荡，中国资产蓄势</div>
-      </div>
-      <div class="big-card">
-        <div class="big-card-label">中国资产牛市</div>
-        <div class="big-number orange" style="font-size:22px; padding-top:4px;">酝酿中</div>
-        <div class="big-card-sub">等待美债降至 3% 以下确认</div>
-      </div>
-    </div>
+    <!-- 宏观环境仪表盘 -->
+    <div class="card macro-dashboard">
+      <div class="card-title">宏观环境</div>
+      <p class="macro-intro">框架逻辑：跟踪美债收益率走势，判断外资回流节奏与中国资产窗口。以下图表展示近6个月趋势，帮助判断当前所处周期位置。</p>
+
+      <!-- 核心指标：美债10Y + 阶段判断 -->
+      <div class="macro-featured">
+
+        <!-- 美债10Y 走势图 -->
+        <div class="macro-chart-card featured">
+          <div class="macro-chart-header">
+            <span class="macro-chart-name">美债10年期收益率（US10Y）</span>
+            <span class="macro-tag core">核心驱动</span>
+          </div>
+          <div class="macro-chart-body">
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+              {
+                "symbol": "TVC:US10Y",
+                "width": "100%",
+                "height": 200,
+                "locale": "zh_CN",
+                "dateRange": "6M",
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "autosize": true,
+                "largeChartUrl": "https://www.tradingview.com/chart/?symbol=TVC:US10Y"
+              }
+              </script>
+            </div>
+          </div>
+          <div class="macro-narrative">
+            <strong>核心逻辑：</strong>美债收益率是所有资产的定价锚，降息路径决定中国资产牛市节奏。<br>
+            关键阈值：
+            <span class="threshold thr-red">&gt; 4.5%</span> 高位警戒，外资继续回流美元 ·
+            <span class="threshold thr-orange">4.0–4.5%</span> 降息博弈期 ·
+            <span class="threshold thr-green">&lt; 3.0%</span> 主升浪启动，人民币升值+港股爆发
+          </div>
+        </div>
+
+        <!-- 右侧：阶段判断 -->
+        <div class="macro-stage-card">
+          <div>
+            <div class="stage-label">当前周期阶段</div>
+            <div class="stage-value blue">降息初期</div>
+            <div class="stage-desc">美联储已开始降息，但高利率粘性犹存，中国资产牛市窗口刚刚打开，尚未进入主升浪。</div>
+          </div>
+          <hr class="stage-divider">
+          <div>
+            <div class="stage-label">关键价位参考</div>
+            <div class="stage-threshold-list">
+              <div class="stage-threshold-item">
+                <div class="thr-dot green"></div>
+                <div class="thr-item-label"><strong>美债 &lt; 4.0%</strong><br>加仓信号一：开始建仓港股宽基</div>
+              </div>
+              <div class="stage-threshold-item">
+                <div class="thr-dot green"></div>
+                <div class="thr-item-label"><strong>美债 &lt; 3.5%</strong><br>加仓信号二：加大港股+科技配置</div>
+              </div>
+              <div class="stage-threshold-item">
+                <div class="thr-dot orange"></div>
+                <div class="thr-item-label"><strong>人民币 &lt; 6.8</strong><br>外资回流加速，港股估值修复</div>
+              </div>
+              <div class="stage-threshold-item">
+                <div class="thr-dot red"></div>
+                <div class="thr-item-label"><strong>美债 &gt; 4.8%</strong><br>减仓警报：降息预期破灭</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /macro-featured -->
+
+      <!-- 次要指标：人民币、恒生、黄金 -->
+      <div class="macro-secondary">
+
+        <!-- 人民币 -->
+        <div class="macro-chart-card">
+          <div class="macro-chart-header">
+            <span class="macro-chart-name">美元/人民币（USD/CNY）</span>
+            <span class="macro-tag linked">联动指标</span>
+          </div>
+          <div class="macro-chart-body">
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+              {
+                "symbol": "FX:USDCNY",
+                "width": "100%",
+                "height": 160,
+                "locale": "zh_CN",
+                "dateRange": "6M",
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "autosize": true
+              }
+              </script>
+            </div>
+          </div>
+          <div class="macro-narrative">
+            <span class="threshold thr-green">&lt; 6.8</span> 人民币强势，外资加速回流 ·
+            <span class="threshold thr-red">&gt; 7.5</span> 汇率压力，拖累港股估值
+          </div>
+        </div>
+
+        <!-- 恒生指数 -->
+        <div class="macro-chart-card">
+          <div class="macro-chart-header">
+            <span class="macro-chart-name">恒生指数（HSI）</span>
+            <span class="macro-tag asset">跟踪标的</span>
+          </div>
+          <div class="macro-chart-body">
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+              {
+                "symbol": "HKEX:HSI",
+                "width": "100%",
+                "height": 160,
+                "locale": "zh_CN",
+                "dateRange": "6M",
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "autosize": true
+              }
+              </script>
+            </div>
+          </div>
+          <div class="macro-narrative">
+            框架逻辑的直接受益资产，美债下行+人民币升值→港股估值双重修复
+          </div>
+        </div>
+
+        <!-- 黄金 -->
+        <div class="macro-chart-card">
+          <div class="macro-chart-header">
+            <span class="macro-chart-name">黄金（GOLD）</span>
+            <span class="macro-tag linked">避险/先行</span>
+          </div>
+          <div class="macro-chart-body">
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+              {
+                "symbol": "TVC:GOLD",
+                "width": "100%",
+                "height": 160,
+                "locale": "zh_CN",
+                "dateRange": "6M",
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "autosize": true
+              }
+              </script>
+            </div>
+          </div>
+          <div class="macro-narrative">
+            美元走弱的先行指标，黄金持续新高→美元信用松动→中国资产窗口扩大
+          </div>
+        </div>
+
+      </div><!-- /macro-secondary -->
+    </div><!-- /macro-dashboard -->
 
     <!-- Cycle Progress -->
     <div class="card">
@@ -1448,80 +1715,16 @@ footer a { color: var(--blue); text-decoration: none; }
 /* =====================================================
    状态变量
 ===================================================== */
-let marketData = null;
 let bondChartInstance = null;
 let progressAnimated = false;
 let posBarAnimated = false;
 
 /* =====================================================
-   数字格式化
+   数字格式化（信号灯用）
 ===================================================== */
-function fmtTNX(v) {
-  if (v == null) return '--';
-  return v.toFixed(2) + '%';
-}
-function fmtCNY(v) {
-  if (v == null) return '--';
-  return v.toFixed(4);
-}
-function fmtGold(v) {
-  if (v == null) return '--';
-  return '$' + v.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
-}
-function fmtIndex(v) {
-  if (v == null) return '--';
-  return v.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
-}
-function fmtOil(v) {
-  if (v == null) return '--';
-  return '$' + v.toFixed(2);
-}
-function fmtChange(c, pct) {
-  if (c == null || pct == null) return { txt: '--', cls: 'neutral' };
-  const arrow = c >= 0 ? '▲' : '▼';
-  const cls = c >= 0 ? 'up' : 'down';
-  return { txt: arrow + ' ' + Math.abs(pct).toFixed(2) + '%', cls };
-}
-
-/* =====================================================
-   更新 Tab1 大数字卡片
-===================================================== */
-function updateBigCards(data) {
-  if (!data) return;
-  const tnx = data['^TNX']?.regularMarketPrice;
-  const bigEl = document.getElementById('tnx-big');
-  const subEl = document.getElementById('tnx-big-sub');
-  if (bigEl && tnx != null) {
-    bigEl.textContent = fmtTNX(tnx);
-    bigEl.className = 'big-number';
-    if (tnx > 4.5) {
-      bigEl.classList.add('red');
-      subEl.textContent = '高位警戒区，降息条件未到';
-    } else if (tnx >= 4.0) {
-      bigEl.classList.add('orange');
-      subEl.textContent = '过渡区，降息预期博弈中';
-    } else {
-      bigEl.classList.add('green');
-      subEl.textContent = '降息通道，加仓信号开启';
-    }
-  }
-}
-
-/* =====================================================
-   更新进度条（美债降息进度）
-===================================================== */
-function updateProgressBars(data) {
-  const tnx = data?.['^TNX']?.regularMarketPrice;
-  let pct = 0;
-  if (tnx != null) {
-    // 4.5% → 3.0%，range = 1.5%
-    pct = Math.max(0, Math.min(100, (4.5 - tnx) / 1.5 * 100));
-  }
-  const bar = document.getElementById('tnx-progress-bar');
-  const pctEl = document.getElementById('tnx-progress-pct');
-  if (bar) bar.style.width = pct.toFixed(1) + '%';
-  if (pctEl) pctEl.textContent = pct.toFixed(1) + '%';
-}
+function fmtTNX(v) { return v == null ? '--' : v.toFixed(2) + '%'; }
+function fmtCNY(v) { return v == null ? '--' : v.toFixed(4); }
+function fmtOil(v) { return v == null ? '--' : '$' + v.toFixed(2); }
 
 /* =====================================================
    初始化静态进度条（一次性动画）
@@ -1762,9 +1965,7 @@ function setCycle(name) {
    初始化
 ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // 初始化信号灯（无实时数据）
-  updateBigCards(null);
-  updateProgressBars(null);
+  // 初始化信号灯（静态状态）
   updateSignals(null);
 
   // 初始化静态进度条动画
