@@ -34,87 +34,24 @@ body {
   font-size: 14px;
   line-height: 1.6;
   min-height: 100vh;
-  padding-top: 52px; /* ticker height */
+  padding-top: 46px; /* tradingview ticker height */
 }
 
-/* ===== Ticker Bar ===== */
+/* ===== Ticker Bar (TradingView) ===== */
 #ticker-bar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 52px;
-  background: #0d1117;
-  border-bottom: 1px solid var(--border2);
-  display: flex;
-  align-items: center;
+  height: 46px;
   z-index: 1000;
   overflow: hidden;
-  gap: 0;
 }
 
-.ticker-scroll {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  flex: 1;
-  overflow: hidden;
-  min-width: 0;
+#ticker-bar .tradingview-widget-container {
+  height: 46px;
 }
 
-.ticker-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 20px;
-  border-right: 1px solid var(--border);
-  white-space: nowrap;
-  animation: fadeIn 0.5s ease;
-  flex-shrink: 0;
-}
-
-.ticker-label {
-  color: var(--muted);
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.ticker-value {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  transition: color 0.3s, background 0.3s;
-}
-
-.ticker-value.updated {
-  background: rgba(88,166,255,0.15);
-  border-radius: 3px;
-  padding: 1px 4px;
-}
-
-.ticker-change {
-  font-family: var(--mono);
-  font-size: 11px;
-}
-
-.ticker-change.up { color: var(--green); }
-.ticker-change.down { color: var(--red); }
-.ticker-change.neutral { color: var(--muted); }
-
-.ticker-meta {
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-left: 1px solid var(--border2);
-  flex-shrink: 0;
-  background: #0d1117;
-}
-
-.ticker-time {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
+#ticker-bar .tradingview-widget-container__widget {
+  height: 46px;
 }
 
 .ticker-countdown {
@@ -834,11 +771,7 @@ footer a { color: var(--blue); text-decoration: none; }
 @media (max-width: 768px) {
   body { padding-top: 44px; }
 
-  #ticker-bar { height: 44px; }
-
-  .ticker-item { padding: 0 12px; }
-
-  .ticker-meta { padding: 0 10px; gap: 8px; }
+  #ticker-bar { height: 46px; }
 
   .big-cards { grid-template-columns: 1fr; gap: 10px; }
 
@@ -870,49 +803,29 @@ footer a { color: var(--blue); text-decoration: none; }
 </head>
 <body>
 
-<!-- ===== Ticker Bar ===== -->
+<!-- ===== Ticker Bar (TradingView) ===== -->
 <div id="ticker-bar">
-  <div class="ticker-scroll" id="ticker-scroll">
-    <!-- 美债 -->
-    <div class="ticker-item">
-      <span class="ticker-label">美债10Y</span>
-      <span class="ticker-value" id="tnx-val">--</span>
-      <span class="ticker-change neutral" id="tnx-chg">--</span>
-    </div>
-    <!-- 人民币 -->
-    <div class="ticker-item">
-      <span class="ticker-label">USD/CNY</span>
-      <span class="ticker-value" id="cny-val">--</span>
-      <span class="ticker-change neutral" id="cny-chg">--</span>
-    </div>
-    <!-- 黄金 -->
-    <div class="ticker-item">
-      <span class="ticker-label">黄金</span>
-      <span class="ticker-value" id="gc-val">--</span>
-      <span class="ticker-change neutral" id="gc-chg">--</span>
-    </div>
-    <!-- 恒生 -->
-    <div class="ticker-item">
-      <span class="ticker-label">恒生指数</span>
-      <span class="ticker-value" id="hsi-val">--</span>
-      <span class="ticker-change neutral" id="hsi-chg">--</span>
-    </div>
-    <!-- 恒科 -->
-    <div class="ticker-item">
-      <span class="ticker-label">恒生科技</span>
-      <span class="ticker-value" id="htech-val">--</span>
-      <span class="ticker-change neutral" id="htech-chg">--</span>
-    </div>
-    <!-- 油价 -->
-    <div class="ticker-item">
-      <span class="ticker-label">WTI油价</span>
-      <span class="ticker-value" id="oil-val">--</span>
-      <span class="ticker-change neutral" id="oil-chg">--</span>
-    </div>
-  </div>
-  <div class="ticker-meta">
-    <span class="ticker-time" id="last-update">--</span>
-    <span class="ticker-countdown" id="countdown">5:00</span>
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+    {
+      "symbols": [
+        {"proName": "TVC:US10Y",    "title": "美债10Y"},
+        {"proName": "FX:USDCNY",    "title": "人民币"},
+        {"proName": "TVC:GOLD",     "title": "黄金"},
+        {"proName": "HKEX:HSI",     "title": "恒生指数"},
+        {"proName": "HKEX:HSTECH",  "title": "恒生科技"},
+        {"proName": "NYMEX:CL1!",   "title": "WTI原油"},
+        {"proName": "SP:SPX",       "title": "标普500"},
+        {"proName": "NASDAQ:NDX",   "title": "纳斯达克"}
+      ],
+      "showSymbolLogo": false,
+      "isTransparent": true,
+      "displayMode": "adaptive",
+      "colorTheme": "dark",
+      "locale": "zh_CN"
+    }
+    </script>
   </div>
 </div>
 
@@ -1527,41 +1440,18 @@ footer a { color: var(--blue); text-decoration: none; }
 </div><!-- /container -->
 
 <footer>
-  <div>基于「胖虎房圈·中美债券周期」公开内容整理 &nbsp;·&nbsp; 数据来源：Yahoo Finance via allorigins.win</div>
+  <div>基于「胖虎房圈·中美债券周期」公开内容整理 &nbsp;·&nbsp; 行情数据：TradingView</div>
   <div>仅供学习参考，不构成任何投资建议 &nbsp;·&nbsp; 投资有风险，入市需谨慎</div>
 </footer>
 
 <script>
 /* =====================================================
-   配置常量
+   状态变量
 ===================================================== */
-const PROXY = 'https://api.allorigins.win/get?url=';
-const YAHOO_URL = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5ETNX,USDCNY%3DX,GC%3DF,%5EHSI,%5EHTECH,CL%3DF&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent';
-const REFRESH_INTERVAL = 5 * 60; // 5 minutes in seconds
-
-let countdownTimer = null;
-let secondsLeft = REFRESH_INTERVAL;
 let marketData = null;
 let bondChartInstance = null;
 let progressAnimated = false;
 let posBarAnimated = false;
-
-/* =====================================================
-   数据获取
-===================================================== */
-async function fetchMarketData() {
-  try {
-    const res = await fetch(PROXY + encodeURIComponent(YAHOO_URL), { cache: 'no-cache' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    const quotes = JSON.parse(json.contents).quoteResponse.result;
-    if (!quotes || quotes.length === 0) throw new Error('No data');
-    return Object.fromEntries(quotes.map(q => [q.symbol, q]));
-  } catch(e) {
-    console.warn('[Market] Fetch failed:', e.message);
-    return null;
-  }
-}
 
 /* =====================================================
    数字格式化
@@ -1591,53 +1481,6 @@ function fmtChange(c, pct) {
   const arrow = c >= 0 ? '▲' : '▼';
   const cls = c >= 0 ? 'up' : 'down';
   return { txt: arrow + ' ' + Math.abs(pct).toFixed(2) + '%', cls };
-}
-
-/* =====================================================
-   更新 Ticker Bar
-===================================================== */
-function updateTicker(data) {
-  if (!data) {
-    // 显示无数据状态
-    ['tnx','cny','gc','hsi','htech','oil'].forEach(id => {
-      const el = document.getElementById(id + '-val');
-      if (el) { el.textContent = '暂不可用'; el.style.color = 'var(--muted)'; }
-    });
-    return;
-  }
-
-  const updates = [
-    { id: 'tnx',   sym: '^TNX',      fmt: fmtTNX  },
-    { id: 'cny',   sym: 'USDCNY=X',  fmt: fmtCNY  },
-    { id: 'gc',    sym: 'GC=F',      fmt: fmtGold  },
-    { id: 'hsi',   sym: '^HSI',      fmt: fmtIndex },
-    { id: 'htech', sym: '^HTECH',    fmt: fmtIndex },
-    { id: 'oil',   sym: 'CL=F',      fmt: fmtOil   },
-  ];
-
-  updates.forEach(({ id, sym, fmt }) => {
-    const q = data[sym];
-    const valEl = document.getElementById(id + '-val');
-    const chgEl = document.getElementById(id + '-chg');
-    if (!valEl || !q) return;
-
-    const newTxt = fmt(q.regularMarketPrice);
-    if (valEl.textContent !== newTxt) {
-      valEl.textContent = newTxt;
-      valEl.classList.add('updated');
-      setTimeout(() => valEl.classList.remove('updated'), 800);
-    }
-    if (chgEl) {
-      const { txt, cls } = fmtChange(q.regularMarketChange, q.regularMarketChangePercent);
-      chgEl.textContent = txt;
-      chgEl.className = 'ticker-change ' + cls;
-    }
-  });
-
-  // 更新时间
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  document.getElementById('last-update').textContent = '更新 ' + timeStr;
 }
 
 /* =====================================================
@@ -1795,38 +1638,6 @@ function updateSignals(data) {
 }
 
 /* =====================================================
-   主刷新函数
-===================================================== */
-async function refreshData() {
-  const data = await fetchMarketData();
-  marketData = data;
-  updateTicker(data);
-  updateBigCards(data);
-  updateProgressBars(data);
-  updateSignals(data);
-  // 重置倒计时
-  secondsLeft = REFRESH_INTERVAL;
-}
-
-/* =====================================================
-   倒计时
-===================================================== */
-function startCountdown() {
-  if (countdownTimer) clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => {
-    secondsLeft--;
-    if (secondsLeft <= 0) {
-      secondsLeft = REFRESH_INTERVAL;
-      refreshData();
-    }
-    const m = Math.floor(secondsLeft / 60);
-    const s = secondsLeft % 60;
-    const el = document.getElementById('countdown');
-    if (el) el.textContent = m + ':' + String(s).padStart(2,'0');
-  }, 1000);
-}
-
-/* =====================================================
    Tab 切换
 ===================================================== */
 function switchTab(idx) {
@@ -1951,16 +1762,13 @@ function setCycle(name) {
    初始化
 ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // 立即获取数据
-  refreshData();
-
-  // 启动倒计时
-  startCountdown();
+  // 初始化信号灯（无实时数据）
+  updateBigCards(null);
+  updateProgressBars(null);
+  updateSignals(null);
 
   // 初始化静态进度条动画
   setTimeout(animateStaticProgressBars, 300);
-
-  // Tab1 默认显示
   animateStaticProgressBars();
 });
 </script>
